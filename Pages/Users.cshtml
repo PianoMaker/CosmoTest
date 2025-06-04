@@ -6,7 +6,7 @@
 
 <h1>Users in Cosmos DB</h1>
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     <div class="mb-3">
         <label asp-for="NewUser.Name" class="form-label">Name</label>
         <input asp-for="NewUser.Name" class="form-control" />
@@ -15,6 +15,10 @@
         <label asp-for="NewUser.Email" class="form-label">Email</label>
         <input asp-for="NewUser.Email" class="form-control" />
     </div>
+    <div class="mb-3">
+        <label class="form-label">Image</label>
+        <input type="file" name="UserImage" class="form-control" />
+    </div>
     <button type="submit" class="btn btn-primary">Add</button>
 </form>
 
@@ -22,8 +26,14 @@
 <ul class="list-group">
     @foreach (var user in Model.Users)
     {
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <span>@user.Name (@user.Email)</span>
+        <li class="list-group-item d-flex mb-1">
+            <div style="width:50px">
+            @if (!string.IsNullOrEmpty(user.ImageUrl))
+            {
+                <img src="@user.ImageUrl" alt="User Image" width="40" height="40" class="me-2 rounded-circle" />
+            }
+            </div>
+            <span style="width:500px">@user.Name (@user.Email)</span>
             <form method="post" asp-page-handler="Delete" asp-route-id="@user.Id" class="m-0">
                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
             </form>

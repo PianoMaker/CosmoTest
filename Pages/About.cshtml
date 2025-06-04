@@ -1,0 +1,37 @@
+﻿@page
+@model CosmoTest.Pages.AboutModel
+@{
+}
+
+<h1>Як зробити подібне</h1>
+
+
+<h2>Публікація на Azure</h2>
+
+<p>На акаунті Azure слід створити ресурсну групу, Azure Cosmos DB account, App Service plan і основне -
+    App Service.
+</p>
+
+<p>Після цього слід налаштувати App Service для використання Azure Cosmos DB account, а також додати Application Insights для моніторингу.
+Для першого проєкту можна обрати безкоштовний "Free" сервіс план. Custom domain обрати  домен, можна безкоштовний азуровий. </p>
+
+<p>У Visual Studio в Programs має бути такий код</p>
+<pre>var accountEndpoint = builder.Configuration["Cosmos:Endpoint"];
+var accountKey = builder.Configuration["Cosmos:Key"];
+var databaseName = "TestCosmosDb";
+
+builder.Services.AddDbContext<AppDbContext>
+    (options =>
+    options.UseCosmos(accountEndpoint, accountKey, databaseName));
+</pre>
+
+<p>Далі, ініціалізація обов'язково асинхронна (інакше дає помилку 500.30)</p>
+
+<pre>await using (var scope = app.Services.CreateAsyncScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.EnsureCreatedAsync(); //
+}</pre>
+
+<p>Далі перед публікацією варто імпортувати публікаційний профайл. Для цього в App d конфігураціях (Settings -> Configuration) слід включити SCM Basic Auth Publishing Credentials та FTP Basic Auth Publishing і тоді в Deployment Center -> Manage publish profile можна буде отримати завантажити публічний профайл. </p>
+<p>Профайл додається у проєкт у Visual Studio через Build->Publish->New profile. Після додавання публічного профайлу кнопка Publish працюватиме</p>

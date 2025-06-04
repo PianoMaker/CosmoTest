@@ -12,9 +12,10 @@ namespace CosmoTest.Pages
             _logger = logger;
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
-
+            Console.WriteLine("redirect to users");
+            return RedirectToPage("/Users");
         }
     }
 }

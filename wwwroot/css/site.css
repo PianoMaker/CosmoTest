@@ -19,4 +19,15 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: #fffecc;
+}
+
+.bg-blue {
+    background: #258cfb;
+}
+
+pre{
+    background-color: #eee;
+    border: 1px dashed darkgray;
+    padding: 5px;
 }

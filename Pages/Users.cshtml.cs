@@ -17,6 +17,9 @@ namespace CosmoTest.Models
         [BindProperty]
         public User NewUser { get; set; } = new User();
 
+        [BindProperty]
+        public IFormFile? UserImage { get; set; }
+
         public async Task OnGetAsync()
         {
             Users = await _context.Users.ToListAsync();
@@ -29,6 +32,25 @@ namespace CosmoTest.Models
                 await OnGetAsync();
                 return Page();
             }
+
+            if (UserImage != null)
+            {
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(UserImage.FileName)}";
+                var dir = Path.Combine("wwwroot/images");
+                var filePath = Path.Combine(dir, fileName);
+
+
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await UserImage.CopyToAsync(stream);
+                }
+
+                NewUser.ImageUrl = $"/images/{fileName}";
+            }
+
             _context.Users.Add(NewUser);
             await _context.SaveChangesAsync();
             return RedirectToPage();
